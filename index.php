@@ -76,6 +76,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
         <form method="post" class="form">
             <h2>Sign Up</h2>
             <p>Already have an account? <a href="login.php">Login</a></p>
+            <div class="lineshape"></div>
 
             <label for="email">Email</label>
             <input type="email" id="email" name="email" placeholder="Email" value="<?= htmlspecialchars($formData['email']) ?>"><br>

@@ -27,9 +27,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
                 $user = $result->fetch_assoc();
                 
                 if (password_verify($password, $user['password'])) {
-                    // Create JWT token
+                   
                     $issuedAt = time();
-                    $expirationTime = $issuedAt + 3600; // 1 hour expiration
+                    $expirationTime = $issuedAt + 3600; 
                     
                     $payload = [
                         'iat' => $issuedAt,
@@ -77,6 +77,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
         <form method="post" class="form">
             <h2>Login</h2>
             <p>Don't have an account? <a href="index.php">Sign Up</a></p>
+            <div class="lineshape"></div>
 
             <label for="email">Email</label>
             <input type="email" id="email" name="email" placeholder="Email" value="<?= htmlspecialchars($email) ?>"><br>

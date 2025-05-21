@@ -3,33 +3,33 @@ require 'vendor/autoload.php';
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
-// Enable error reporting for debugging
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 $secret_key = 'mystrongsecretkey'; 
 
-// Check if token exists
+
 if (!isset($_COOKIE['auth_token'])) {
     header("Location: login.php");
     exit();
 }
 
 try {
-    // Decode and verify token
+    
     $decoded = JWT::decode($_COOKIE['auth_token'], new Key($secret_key, 'HS256'));
     
-    // Check token expiration
+    
     if (time() > $decoded->exp) {
         throw new Exception("Token expired");
     }
     
-    // Get user data
+    
     $userData = (array) $decoded->data;
     $firstname = htmlspecialchars($userData['firstname']);
     
 } catch (Exception $e) {
-    // Clear invalid token and redirect
+    
     setcookie('auth_token', '', [
         'expires' => time() - 3600,
         'path' => '/',

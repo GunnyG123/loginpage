@@ -14,7 +14,7 @@
 </head>
 <body>
     <div class="form">
-    <h1 style="color:red">login sucessfull please <a href="login.php">Login</a></h1>
+    <p style="color:red">login sucessfull please: <a href="login.php">Login</a></p>
     </div>
 </body>
 </html>

@@ -1,4 +1,5 @@
 <?php
+session_start();
 include('database.php');
 require 'vendor/autoload.php';
 use PHPMailer\PHPMailer\PHPMailer;
@@ -15,10 +16,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['send_otp'])) {
     $result = $stmt->get_result();
 
     if ($result->num_rows === 1) {
+       
+        $_SESSION['reset_email'] = $email;
+
         $otp = rand(100000, 999999);
         $expires = time() + 300; 
 
-        
+       
         $stmt = $db->prepare("DELETE FROM pwdReset WHERE pwdResetEmail = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
@@ -28,7 +32,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['send_otp'])) {
         $stmt->bind_param("sss", $email, $otp, $expires);
         $stmt->execute();
 
-        
         $mail = new PHPMailer(true);
         try {
             $mail->isSMTP();
@@ -46,8 +49,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['send_otp'])) {
 
             $mail->send();
             $feedback = '<div class="sucessfull">OTP sent to your email.</div>';
+            if ($feedback == '<div class="sucessfull">OTP sent to your email.</div>') {
+                header("Location: verifyotp.php");
+                exit();
+            }
         } catch (Exception $e) {
-           $feedback = '<div class="sucessfull">Mailer Error: ' . $mail->ErrorInfo . '</div>';
+            $feedback = '<div class="unsucessfull">Mailer Error: ' . $mail->ErrorInfo . '</div>';
         }
     } else {
         $feedback = '<div class="unsucessfull">Email not found!</div>';
@@ -63,11 +70,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['send_otp'])) {
 </head>
 <body>
     <form method="POST" class="form">
-        <h3>Reset Password - Request OTP</h3>
+        <h2> Request OTP</h2>
+
         <input type="email" name="email" placeholder="Enter your email" required>
         <button type="submit" name="send_otp" class ='custombtn'>Send OTP</button>
         <p><?= $feedback ?></p>
-        <a href="resetpassword.php">Already have OTP?</a>
+        <a href="verifyotp.php">Already have OTP?</a>
     </form>
     
 </body>
